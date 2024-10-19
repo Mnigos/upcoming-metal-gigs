@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 export const env = createEnv({
   server: {
-    SANITY_PROJECT_ID: z.string().url().optional().default('h3qnoixv'),
+    SANITY_PROJECT_ID: z.string().optional().default('h3qnoixv'),
   },
   experimental__runtimeEnv: process.env,
 })
