@@ -10,6 +10,16 @@ export const gigType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'slug',
+      type: 'slug',
+      options: {
+        source: 'name',
+      },
+      validation: rule =>
+        rule.required().error(`Required to generate a page on the website`),
+      hidden: ({ document }) => !document?.name,
+    }),
+    defineField({
       name: 'artists',
       type: 'array',
       of: [
