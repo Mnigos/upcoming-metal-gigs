@@ -1,3 +1,2 @@
-@generated/* linguist-generated
 tests/snapshots/**/*.snap linguist-generated
-dist linguist-generated
+sanity/types.ts linguist-generated
