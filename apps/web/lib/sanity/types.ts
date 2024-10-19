@@ -13,7 +13,7 @@
  */
 
 // Source: schema.json
-export interface SanityImagePaletteSwatch {
+export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch'
   background?: string
   foreground?: string
@@ -21,7 +21,7 @@ export interface SanityImagePaletteSwatch {
   title?: string
 }
 
-export interface SanityImagePalette {
+export type SanityImagePalette = {
   _type: 'sanity.imagePalette'
   darkMuted?: SanityImagePaletteSwatch
   lightVibrant?: SanityImagePaletteSwatch
@@ -32,14 +32,14 @@ export interface SanityImagePalette {
   muted?: SanityImagePaletteSwatch
 }
 
-export interface SanityImageDimensions {
+export type SanityImageDimensions = {
   _type: 'sanity.imageDimensions'
   height?: number
   width?: number
   aspectRatio?: number
 }
 
-export interface SanityImageHotspot {
+export type SanityImageHotspot = {
   _type: 'sanity.imageHotspot'
   x?: number
   y?: number
@@ -47,7 +47,7 @@ export interface SanityImageHotspot {
   width?: number
 }
 
-export interface SanityImageCrop {
+export type SanityImageCrop = {
   _type: 'sanity.imageCrop'
   top?: number
   bottom?: number
@@ -55,7 +55,7 @@ export interface SanityImageCrop {
   right?: number
 }
 
-export interface SanityFileAsset {
+export type SanityFileAsset = {
   _id: string
   _type: 'sanity.fileAsset'
   _createdAt: string
@@ -77,7 +77,7 @@ export interface SanityFileAsset {
   source?: SanityAssetSourceData
 }
 
-export interface SanityImageAsset {
+export type SanityImageAsset = {
   _id: string
   _type: 'sanity.imageAsset'
   _createdAt: string
@@ -100,7 +100,7 @@ export interface SanityImageAsset {
   source?: SanityAssetSourceData
 }
 
-export interface SanityImageMetadata {
+export type SanityImageMetadata = {
   _type: 'sanity.imageMetadata'
   location?: Geopoint
   dimensions?: SanityImageDimensions
@@ -111,49 +111,46 @@ export interface SanityImageMetadata {
   isOpaque?: boolean
 }
 
-export interface Geopoint {
+export type Geopoint = {
   _type: 'geopoint'
   lat?: number
   lng?: number
   alt?: number
 }
 
-export interface Slug {
-  _type: 'slug'
-  current?: string
-  source?: string
-}
-
-export interface SanityAssetSourceData {
+export type SanityAssetSourceData = {
   _type: 'sanity.assetSourceData'
   name?: string
   id?: string
   url?: string
 }
 
-export interface Gig {
+export type Gig = {
   _id: string
   _type: 'gig'
   _createdAt: string
   _updatedAt: string
   _rev: string
   name?: string
-  artists?: {
+  slug?: Slug
+  artists?: Array<{
     _ref: string
     _type: 'reference'
     _weak?: boolean
     _key: string
     [internalGroqTypeReferenceTo]?: 'artist'
-  }[]
+  }>
   venue?: {
     _ref: string
     _type: 'reference'
     _weak?: boolean
     [internalGroqTypeReferenceTo]?: 'venue'
   }
+  imageUrl?: string
+  date?: string
 }
 
-export interface Venue {
+export type Venue = {
   _id: string
   _type: 'venue'
   _createdAt: string
@@ -163,7 +160,13 @@ export interface Venue {
   city?: string
 }
 
-export interface Artist {
+export type Slug = {
+  _type: 'slug'
+  current?: string
+  source?: string
+}
+
+export type Artist = {
   _id: string
   _type: 'artist'
   _createdAt: string
@@ -182,33 +185,33 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | SanityImageMetadata
   | Geopoint
-  | Slug
   | SanityAssetSourceData
   | Gig
   | Venue
+  | Slug
   | Artist
 export declare const internalGroqTypeReferenceTo: unique symbol
 // Source: ../web/app/page.tsx
 // Variable: GIGS_QUERY
-// Query: *[_type == "gig"]{_id, name, venue -> { name, city }, artists[] -> { name } }
-export type GIGS_QUERYResult = {
+// Query: *[  _type == "gig" && now() < date]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }| order(date asc)
+export type GIGS_QUERYResult = Array<{
   _id: string
   name: string | null
+  date: string | null
+  imageUrl: string | null
   venue: {
     name: string | null
     city: string | null
   } | null
-  artists:
-    | {
-        name: string | null
-      }[]
-    | null
-}[]
+  artists: Array<{
+    name: string | null
+  }> | null
+}>
 
 // Query TypeMap
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[_type == "gig"]{_id, name, venue -> { name, city }, artists[] -> { name } }': GIGS_QUERYResult
+    '*[\n  _type == "gig" && now() < date\n]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }\n| order(date asc)': GIGS_QUERYResult
   }
 }
