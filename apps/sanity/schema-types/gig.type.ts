@@ -24,5 +24,13 @@ export const gigType = defineType({
       type: 'reference',
       to: { type: 'venue' },
     }),
+    defineField({
+      name: 'imageUrl',
+      type: 'string',
+    }),
+    defineField({
+      name: 'date',
+      type: 'datetime',
+    }),
   ],
 })
