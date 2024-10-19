@@ -11,6 +11,7 @@
     "test:coverage": "turbo test:coverage",
     "extract-schema": "turbo extract-schema",
     "generate-types": "turbo generate-types",
+    "postgenerate-types": "prettier --write \"**/sanity/types.ts\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "commit": "cz"
