@@ -14,6 +14,8 @@
       "persistent": true
     },
     "test": {},
+    "extract-schema": {},
+    "generate-types": {},
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },

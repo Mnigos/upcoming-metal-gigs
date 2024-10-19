@@ -9,6 +9,8 @@
     "test": "turbo test",
     "ui": "pnpm --filter @repo/ui ui",
     "test:coverage": "turbo test:coverage",
+    "extract-schema": "turbo extract-schema",
+    "generate-types": "turbo generate-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "commit": "cz"
