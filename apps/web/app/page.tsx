@@ -8,28 +8,43 @@ import {
 import { defineQuery } from 'next-sanity'
 import Image from 'next/image'
 
+import { ShowPastCheckbox } from '~/components/show-past-checkbox'
 import { client } from '~/lib/sanity/client'
 
 const GIGS_QUERY = defineQuery(`*[
-  _type == "gig" && now() < date
+  _type == "gig" && ($showPast == true || now() < date)
 ]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }
 | order(date asc)`)
 
-export default async function Home() {
+namespace HomePage {
+  export type Props = Readonly<{
+    searchParams: Promise<{
+      'show-past'?: string
+    }>
+  }>
+}
+
+async function HomePage({ searchParams }: HomePage.Props) {
+  const { 'show-past': showPast } = await searchParams
+
   const gigs = await client.fetch(
     GIGS_QUERY,
-    {},
+    {
+      showPast: showPast === 'true',
+    },
     {
       next: {
-        revalidate: 3600,
+        revalidate: 0,
       },
     }
   )
 
   return (
     <main className="flex flex-col gap-4">
-      <header>
+      <header className="flex justify-between">
         <h1 className="text-4xl font-semibold">Upcoming Metal Gigs</h1>
+
+        <ShowPastCheckbox isChecked={showPast === 'true'} />
       </header>
 
       <section className="grid grid-cols-3 gap-2">
@@ -46,7 +61,6 @@ export default async function Home() {
                     alt={name}
                     width={400}
                     height={200}
-                    objectFit="cover"
                     className="max-h-[200px] rounded-t-lg object-cover object-top"
                   />
                 )}
@@ -76,3 +90,5 @@ export default async function Home() {
     </main>
   )
 }
+
+export default HomePage

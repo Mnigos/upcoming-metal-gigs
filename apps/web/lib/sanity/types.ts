@@ -193,7 +193,7 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol
 // Source: ../web/app/page.tsx
 // Variable: GIGS_QUERY
-// Query: *[  _type == "gig" && now() < date]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }| order(date asc)
+// Query: *[  _type == "gig" && ($showPast == true || now() < date)]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }| order(date asc)
 export type GIGS_QUERYResult = Array<{
   _id: string
   name: string | null
@@ -212,6 +212,6 @@ export type GIGS_QUERYResult = Array<{
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[\n  _type == "gig" && now() < date\n]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }\n| order(date asc)': GIGS_QUERYResult
+    '*[\n  _type == "gig" && ($showPast == true || now() < date)\n]{_id, name, date, imageUrl, venue -> { name, city }, artists[] -> { name } }\n| order(date asc)': GIGS_QUERYResult
   }
 }
